@@ -29,13 +29,13 @@ namespace OriginChellenge.Controllers
             {
                 tarj = db.Tarjeta.Where(t => t.NumeroTarjeta == mTarjeta.NumeroTarjeta).FirstOrDefault();
             }
-            if(tarj == null)
+            if (tarj == null)
             {
-                return Content("No se encontro nada");
+                return RedirectToAction("Error", "Error");
             }
             else
             {
-                return RedirectToAction("PIN","Acceso");
+                return RedirectToAction("PIN", "Acceso");
             }
         }
 
@@ -50,12 +50,18 @@ namespace OriginChellenge.Controllers
             }
             if (tarj == null)
             {
-                return Content("Datos Incorrectos");
+                return RedirectToAction("Error", "Error");
             }
             else
             {
                 return RedirectToAction("Inicio", "Inicio");
             }
+        }
+
+        [HttpPost]
+        public ActionResult CerrarSesion()
+        {
+            return RedirectToAction("Tarjeta", "Acceso");
         }
     }
 }

@@ -28,7 +28,7 @@ namespace OriginChellenge.Controllers
         public ActionResult ReporteOperacion()
         {
             Operacion mOperacion = operacionActual;
-            Tarjeta mTarjeta = datosBalance();
+            Tarjeta mTarjeta = datosActuales();
             ViewBag.numeroTarjeta = mTarjeta.NumeroTarjeta;
             ViewBag.hora = mOperacion.Fecha.ToString();
             ViewBag.cantidadRetirada = mOperacion.Monto;
@@ -36,9 +36,20 @@ namespace OriginChellenge.Controllers
             return View();
         }
 
+        private Tarjeta datosActuales()
+        {
+            using (dbOriginEntities2 db = new dbOriginEntities2())
+            {
+                int idTarjeta = AccesoController.IdTarjetaLogin;
+                Tarjeta mTarjeta = db.Tarjeta.Where(t => t.IdTarjeta == idTarjeta).FirstOrDefault();
+
+                return mTarjeta;
+            }
+        }
+
         private Tarjeta datosBalance()
         {
-            using(dbOriginEntities2 db = new dbOriginEntities2())
+            using (dbOriginEntities2 db = new dbOriginEntities2())
             {
                 int idTarjeta = AccesoController.IdTarjetaLogin;
                 Tarjeta mTarjeta = db.Tarjeta.Where(t => t.IdTarjeta == idTarjeta).FirstOrDefault();
@@ -54,7 +65,7 @@ namespace OriginChellenge.Controllers
                 db.SaveChanges();
 
                 return mTarjeta;
-            }     
+            }
         }
 
         public ActionResult Retiro()
@@ -65,7 +76,7 @@ namespace OriginChellenge.Controllers
         [HttpPost]
         public ActionResult Retiro(Operacion mOperacion)
         {
-            using(dbOriginEntities2 db = new dbOriginEntities2())
+            using (dbOriginEntities2 db = new dbOriginEntities2())
             {
                 //Modificaciones en tabla Operacion
                 int idTajeta = AccesoController.IdTarjetaLogin;
@@ -82,11 +93,17 @@ namespace OriginChellenge.Controllers
                 operacionActual = operacion;
                 //Modificaciones en tabla Tajeta
                 Tarjeta mTarjeta = db.Tarjeta.Where(t => t.IdTarjeta == idTajeta).FirstOrDefault();
-                mTarjeta.Balance = mTarjeta.Balance - Convert.ToDecimal(operacion.Monto);
-
-                db.SaveChanges();
-
-                return RedirectToAction("ReporteOperacion", "Inicio");
+                decimal balance = mTarjeta.Balance - Convert.ToDecimal(operacion.Monto);
+                if (balance >= 0)
+                {
+                    mTarjeta.Balance = balance;
+                    db.SaveChanges();
+                    return RedirectToAction("ReporteOperacion", "Inicio");
+                }
+                else
+                {
+                    return RedirectToAction("Error", "Error");
+                }
             }
         }
     }

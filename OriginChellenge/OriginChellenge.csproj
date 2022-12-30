@@ -129,6 +129,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AccesoController.cs" />
+    <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\InicioController.cs" />
     <Compile Include="Global.asax.cs">
@@ -224,6 +225,7 @@
     <Content Include="Views\Inicio\Balance.cshtml" />
     <Content Include="Views\Inicio\Retiro.cshtml" />
     <Content Include="Views\Inicio\ReporteOperacion.cshtml" />
+    <Content Include="Views\Error\Error.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

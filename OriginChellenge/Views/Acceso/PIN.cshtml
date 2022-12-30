@@ -15,6 +15,7 @@
 <body>
     <div id="login">
         <h3 class="text-center text-white pt-5">BIENVENIDO</h3>
+        
         <div class="container">
             <div id="login-row" class="row justify-content-center align-items-center">
                 <div id="login-column" class="col-md-6">
@@ -27,7 +28,12 @@
                             </div>
                             <div class="form-group">
                                 <input type="submit" name="submit" class="btn btn-info btn-md" value="Aceptar">
+                                <input type="reset" class="btn btn-info btn-md" value="Limpiar">
+                                
                             </div>
+                        </form>
+                        <form action="@Url.Action("CerrarSesion","Acceso")" method="post">
+                            <input type="submit" class="btn btn-info btn-md" value="Atras">
                         </form>
                     </div>
                 </div>
@@ -36,8 +42,4 @@
     </div>
 </body>
 
-@*<form action="@Url.Action("Tarjeta","Acceso")" method="post">
-        <input placeholder="Ingrese numero de PIN" name="PIN" />
-        <button type="submit">Aceptar</button>
-    </form>*@
 
