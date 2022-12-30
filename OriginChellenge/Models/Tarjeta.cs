@@ -25,6 +25,7 @@ namespace OriginChellenge.Models
         public int PIN { get; set; }
         public string FechaVencimiento { get; set; }
         public decimal Balance { get; set; }
+        public Nullable<int> Bloqueada { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Operacion> Operacion { get; set; }

@@ -10,6 +10,8 @@ namespace OriginChellenge.Controllers
     public class AccesoController : Controller
     {
         public static int IdTarjetaLogin;
+        public static int Errores = 0;
+        public static int IdTarjetaErronea;
         // GET: Acceso
         public ActionResult Tarjeta()
         {
@@ -28,14 +30,31 @@ namespace OriginChellenge.Controllers
             using (dbOriginEntities2 db = new dbOriginEntities2())
             {
                 tarj = db.Tarjeta.Where(t => t.NumeroTarjeta == mTarjeta.NumeroTarjeta).FirstOrDefault();
+                
             }
             if (tarj == null)
             {
                 return RedirectToAction("Error", "Error");
             }
+            else if(tarj.Bloqueada == 1)
+            {
+                return RedirectToAction("Error", "Error");
+            }
             else
             {
+                IdTarjetaErronea = Convert.ToInt32(tarj.IdTarjeta);
                 return RedirectToAction("PIN", "Acceso");
+            }
+        }
+
+        private void bloquear()
+        {
+            Tarjeta tarj = new Tarjeta();
+            using (dbOriginEntities2 db = new dbOriginEntities2())
+            {
+                tarj = db.Tarjeta.Where(t => t.IdTarjeta == IdTarjetaErronea).FirstOrDefault();
+                tarj.Bloqueada = 1;
+                db.SaveChanges();
             }
         }
 
@@ -45,17 +64,28 @@ namespace OriginChellenge.Controllers
             Tarjeta tarj = new Tarjeta();
             using (dbOriginEntities2 db = new dbOriginEntities2())
             {
-                tarj = db.Tarjeta.Where(t => t.PIN == mTarjeta.PIN).FirstOrDefault();
-                IdTarjetaLogin = Convert.ToInt32(tarj.IdTarjeta);
+                tarj = db.Tarjeta.Where(t => t.PIN == mTarjeta.PIN).FirstOrDefault(); 
             }
-            if (tarj == null)
+            if(Errores <= 4)
             {
-                return RedirectToAction("Error", "Error");
+                if (tarj == null)
+                {
+                    Errores++;
+                    return RedirectToAction("Error", "Error");
+                }
+                else
+                {
+                    IdTarjetaLogin = Convert.ToInt32(tarj.IdTarjeta);
+                    Errores = 0;
+                    return RedirectToAction("Inicio", "Inicio");
+                }
             }
             else
             {
-                return RedirectToAction("Inicio", "Inicio");
+                bloquear();
+                return RedirectToAction("Error", "Error");
             }
+
         }
 
         [HttpPost]
